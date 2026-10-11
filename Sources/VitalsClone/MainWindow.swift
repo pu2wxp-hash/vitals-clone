@@ -56,7 +56,7 @@ struct MainWindowView: View {
                   primaryButton: .destructive(Text("Quit")) { c.action(false) },
                   secondaryButton: .cancel())
         }
-        .frame(minWidth: 1000, minHeight: 640)
+        .frame(minWidth: 820, minHeight: 640)
     }
 }
 
