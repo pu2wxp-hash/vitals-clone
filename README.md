@@ -12,7 +12,7 @@ Aplicativo de barra de menus para acompanhar a atividade local do Mac. Esta é u
 
 ## Requisitos
 
-- macOS 15 ou posterior.
+- macOS 13 ou posterior.
 - Para compilar localmente: Xcode ou Command Line Tools com Swift 6 e o SDK macOS apropriado.
 
 ## Compilar no Mac

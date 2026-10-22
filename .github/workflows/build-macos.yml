@@ -91,20 +91,20 @@ jobs:
           codesign --verify --deep --strict "$ARM_APP"
           lipo -info "$ARM_APP/Contents/MacOS/RaioXMac"
           ditto -c -k --sequesterRsrc --keepParent \
-            "$ARM_APP" "dist/RaioX-Mac-macOS15-universal.zip"
+            "$ARM_APP" "dist/RaioX-Mac-macOS13-universal.zip"
           cp -R "$ARM_APP" "dist/dmg/RaioX Mac.app"
           ln -s /Applications "dist/dmg/Applications"
           hdiutil create -volname "RaioX Mac" -srcfolder dist/dmg -ov -format UDZO \
-            "dist/RaioX-Mac-macOS15-universal.dmg"
-          (cd dist && shasum -a 256 RaioX-Mac-macOS15-universal.dmg RaioX-Mac-macOS15-universal.zip) \
+            "dist/RaioX-Mac-macOS13-universal.dmg"
+          (cd dist && shasum -a 256 RaioX-Mac-macOS13-universal.dmg RaioX-Mac-macOS13-universal.zip) \
             > dist/SHA256SUMS.txt
       - name: Upload installers (short retention)
         uses: actions/upload-artifact@v4
         with:
           name: RaioX-Mac-installers
           path: |
-            dist/RaioX-Mac-macOS15-universal.dmg
-            dist/RaioX-Mac-macOS15-universal.zip
+            dist/RaioX-Mac-macOS13-universal.dmg
+            dist/RaioX-Mac-macOS13-universal.zip
             dist/SHA256SUMS.txt
           if-no-files-found: error
           retention-days: 1

@@ -3,24 +3,24 @@ import AppKit
 
 @main
 struct RaioXMacApp: App {
-    @State private var store: MonitorStore
+    @StateObject private var store: MonitorStore
 
     init() {
         if CommandLine.arguments.contains("--dump") { SelfTest.run() }
-        _store = State(initialValue: MonitorStore())
+        _store = StateObject(wrappedValue: MonitorStore())
         // LSUIElement equivalent: menu-bar only, no Dock icon.
         NSApplication.shared.setActivationPolicy(.accessory)
     }
 
     var body: some Scene {
         Window("RaioX Mac", id: "main") {
-            MainWindowView().environment(store)
+            MainWindowView().environmentObject(store)
         }
         .windowToolbarStyle(.unified(showsTitle: false))
         .defaultSize(width: 1300, height: 800)
 
         MenuBarExtra {
-            MenuBarView().environment(store)
+            MenuBarView().environmentObject(store)
         } label: {
             MenuBarLabel(store: store)
         }
@@ -30,7 +30,7 @@ struct RaioXMacApp: App {
 
 /// "An icon, a figure or a graph": pulse icon + CPU and MEM figures, like Vitals' default item.
 struct MenuBarLabel: View {
-    let store: MonitorStore
+    @ObservedObject var store: MonitorStore
     var body: some View {
         let s = store.system
         let strained = s.memoryPressure >= 0.8 || s.cpuTotal >= 0.9

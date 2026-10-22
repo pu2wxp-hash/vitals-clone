@@ -5,7 +5,7 @@ import AppKit
 // a 2-column grid of metric tiles, "Busiest Right Now", and a footer with Open RaioX Mac / Quit.
 
 struct MenuBarView: View {
-    @Environment(MonitorStore.self) var store
+    @EnvironmentObject var store: MonitorStore
     @Environment(\.openWindow) var openWindow
     @State private var tab: VitalsTab = .overview
 

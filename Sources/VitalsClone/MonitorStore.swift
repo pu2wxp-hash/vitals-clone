@@ -1,6 +1,6 @@
 import Foundation
 import AppKit
-import Observation
+import Combine
 import UserNotifications
 
 // Mirrors Vitals/MonitorStore.swift + VitalsCore.InsightEngine (thresholds named in the binary).
@@ -94,34 +94,33 @@ final class InsightEngine {
     }
 }
 
-@Observable
-final class MonitorStore {
-    var system = SystemSample()
-    var cpuHistory: [Double] = []
-    var memHistory: [Double] = []
-    var netInHistory: [Double] = []
-    var netOutHistory: [Double] = []
-    var gpuHistory: [Double] = []
-    var diskHistory: [Double] = []
-    var cpuDaySum = 0.0
-    var cpuDayCount = 0.0
-    var gpuSum = 0.0
-    var gpuCount = 0.0
-    var gpuPeak = 0.0
-    var downloadedSession: Double = 0
-    var uploadedSession: Double = 0
-    var writtenSession: Double = 0
-    var readSession: Double = 0
-    var netReady = false
-    var groups: [AppGroup] = []
-    var projects: [DevProject] = []
-    var ports: [ListeningPort] = []
-    var blockers: [SleepBlocker] = []
-    var idleServers: [IdleServer] = []
-    var insights: [Insight] = []
-    var unmeasuredCount = 0
-    var interval: TimeInterval = 2
-    var tab: VitalsTab = .overview
+final class MonitorStore: ObservableObject {
+    @Published var system = SystemSample()
+    @Published var cpuHistory: [Double] = []
+    @Published var memHistory: [Double] = []
+    @Published var netInHistory: [Double] = []
+    @Published var netOutHistory: [Double] = []
+    @Published var gpuHistory: [Double] = []
+    @Published var diskHistory: [Double] = []
+    @Published var cpuDaySum = 0.0
+    @Published var cpuDayCount = 0.0
+    @Published var gpuSum = 0.0
+    @Published var gpuCount = 0.0
+    @Published var gpuPeak = 0.0
+    @Published var downloadedSession: Double = 0
+    @Published var uploadedSession: Double = 0
+    @Published var writtenSession: Double = 0
+    @Published var readSession: Double = 0
+    @Published var netReady = false
+    @Published var groups: [AppGroup] = []
+    @Published var projects: [DevProject] = []
+    @Published var ports: [ListeningPort] = []
+    @Published var blockers: [SleepBlocker] = []
+    @Published var idleServers: [IdleServer] = []
+    @Published var insights: [Insight] = []
+    @Published var unmeasuredCount = 0
+    @Published var interval: TimeInterval = 2
+    @Published var tab: VitalsTab = .overview
 
     private let sys = SystemSampler()
     private let proc = ProcessSampler()

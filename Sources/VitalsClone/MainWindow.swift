@@ -13,12 +13,11 @@ struct ConfirmQuit: Identifiable {
 }
 
 struct MainWindowView: View {
-    @Environment(MonitorStore.self) var store
+    @EnvironmentObject var store: MonitorStore
     @State private var filter = ""
     @State private var confirm: ConfirmQuit?
 
     var body: some View {
-        @Bindable var store = store
         VStack(spacing: 0) {
             Group {
                 switch store.tab {
@@ -88,7 +87,7 @@ struct TabCapsule: View {
 }
 
 struct StatusBar: View {
-    @Environment(MonitorStore.self) var store
+    @EnvironmentObject var store: MonitorStore
     var body: some View {
         let procs = store.groups.reduce(0) { $0 + $1.processes.count }
         VStack(spacing: 0) {
@@ -111,7 +110,7 @@ struct StatusBar: View {
 // MARK: Overview
 
 struct OverviewTab: View {
-    @Environment(MonitorStore.self) var store
+    @EnvironmentObject var store: MonitorStore
     let filter: String
     @Binding var confirm: ConfirmQuit?
     @State private var showAllInsights = false
@@ -200,7 +199,7 @@ func primaryInterface() -> String {
 }
 
 struct OverviewCard: View {
-    @Environment(MonitorStore.self) var store
+    @EnvironmentObject var store: MonitorStore
     let tab: VitalsTab
     let caption: String
     let value: String
@@ -247,7 +246,7 @@ struct OverviewCard: View {
 }
 
 struct ProjectsOverviewCard: View {
-    @Environment(MonitorStore.self) var store
+    @EnvironmentObject var store: MonitorStore
     @State private var hover = false
     var body: some View {
         let mem = store.projects.reduce(UInt64(0)) { $0 + $1.memory }
@@ -293,7 +292,7 @@ struct ProjectsOverviewCard: View {
 
 struct InsightRowView: View {
     let insight: Insight
-    @Environment(MonitorStore.self) var store
+    @EnvironmentObject var store: MonitorStore
     @State private var hover = false
     var body: some View {
         let g = store.groups.first { $0.id == insight.groupID }
@@ -365,7 +364,7 @@ extension Insight.Kind {
 // MARK: Metric tabs (CPU, Memory, Disk, Network, GPU)
 
 struct MetricTab: View {
-    @Environment(MonitorStore.self) var store
+    @EnvironmentObject var store: MonitorStore
     let tab: VitalsTab
     let filter: String
     @Binding var confirm: ConfirmQuit?
@@ -539,7 +538,7 @@ extension VitalsTab {
 // MARK: App table (outline rows, alternating stripes, inline bar in the primary column)
 
 struct AppTable: View {
-    @Environment(MonitorStore.self) var store
+    @EnvironmentObject var store: MonitorStore
     let primary: VitalsTab
     let filter: String
     @Binding var confirm: ConfirmQuit?
@@ -609,7 +608,7 @@ struct AppTable: View {
 }
 
 struct AppTableRow: View {
-    @Environment(MonitorStore.self) var store
+    @EnvironmentObject var store: MonitorStore
     let group: AppGroup
     let columns: [VitalsTab]
     let primary: VitalsTab
@@ -720,7 +719,7 @@ extension VitalsTab {
 // MARK: Projects tab ("Dev servers and open ports, by project")
 
 struct ProjectsTab: View {
-    @Environment(MonitorStore.self) var store
+    @EnvironmentObject var store: MonitorStore
     @Binding var confirm: ConfirmQuit?
 
     var body: some View {
@@ -806,7 +805,7 @@ struct ProjectsTab: View {
 }
 
 struct ProjectCardView: View {
-    @Environment(MonitorStore.self) var store
+    @EnvironmentObject var store: MonitorStore
     let project: DevProject
     @Binding var confirm: ConfirmQuit?
     var body: some View {
@@ -852,7 +851,7 @@ struct ProjectCardView: View {
 }
 
 struct PortRow: View {
-    @Environment(MonitorStore.self) var store
+    @EnvironmentObject var store: MonitorStore
     let port: UInt16
     let name: String
     let detail: String
