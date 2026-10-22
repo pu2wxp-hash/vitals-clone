@@ -36,6 +36,10 @@ jobs:
           ./build-app.sh
           APP="build/RaioX Mac.app"
           codesign --verify --deep --strict "$APP"
+          test -f "$APP/Contents/Resources/RaioXMac.icns"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIconFile' "$APP/Contents/Info.plist")" = "RaioXMac.icns"
+          iconutil -c iconset -o "/tmp/raiox-iconset-${{ matrix.arch }}.iconset" "$APP/Contents/Resources/RaioXMac.icns"
+          test -s "/tmp/raiox-iconset-${{ matrix.arch }}.iconset/icon_512x512@2x.png"
           "$APP/Contents/MacOS/RaioXMac" --dump | tee "/tmp/raiox-${{ matrix.arch }}.log"
           grep -q '^CPU ' "/tmp/raiox-${{ matrix.arch }}.log"
           grep -q '^MEM used ' "/tmp/raiox-${{ matrix.arch }}.log"

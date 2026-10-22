@@ -25,6 +25,8 @@ open "build/RaioX Mac.app"
 
 O script usa o Xcode selecionado no sistema e o SDK macOS encontrado por `xcrun`. O aplicativo fica em `build/RaioX Mac.app`.
 
+O ícone do bundle é construído a partir de `Assets/RaioXMac-1024.png`; a fonte programática está em `scripts/generate_app_icon.py`. Para regenerar a imagem-fonte, instale Pillow e execute `python3 scripts/generate_app_icon.py`.
+
 ## Build universal
 
 O workflow manual em `.github/workflows/build-macos.yml` compila e testa as arquiteturas Apple Silicon e Intel, combina os binários e gera um `.dmg` e um `.zip` universais.
