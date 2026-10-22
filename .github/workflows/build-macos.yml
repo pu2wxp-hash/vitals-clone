@@ -1,0 +1,106 @@
+name: Build RaioX Mac
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build and smoke-test (${{ matrix.arch }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: arm64
+            runner: macos-26
+          - arch: x86_64
+            runner: macos-26-intel
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Select Xcode 26.5
+        env:
+          DEVELOPER_DIR: /Applications/Xcode_26.5.app/Contents/Developer
+        run: |
+          echo "DEVELOPER_DIR=$DEVELOPER_DIR" >> "$GITHUB_ENV"
+          echo "SDKROOT=$(xcrun --sdk macosx --show-sdk-path)" >> "$GITHUB_ENV"
+          xcodebuild -version
+          xcrun --sdk macosx --show-sdk-version
+          test "$(uname -m)" = "${{ matrix.arch }}"
+      - name: Build and smoke-test
+        run: |
+          set -euo pipefail
+          ./build-app.sh
+          APP="build/RaioX Mac.app"
+          codesign --verify --deep --strict "$APP"
+          "$APP/Contents/MacOS/RaioXMac" --dump | tee "/tmp/raiox-${{ matrix.arch }}.log"
+          grep -q '^CPU ' "/tmp/raiox-${{ matrix.arch }}.log"
+          grep -q '^MEM used ' "/tmp/raiox-${{ matrix.arch }}.log"
+          mkdir -p artifacts
+          ditto -c -k --sequesterRsrc --keepParent "$APP" "artifacts/RaioX-Mac-${{ matrix.arch }}.zip"
+      - name: Upload architecture build for packaging
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.arch }}
+          path: artifacts/RaioX-Mac-${{ matrix.arch }}.zip
+          if-no-files-found: error
+          retention-days: 1
+
+  package:
+    name: Package universal installers
+    needs: build
+    runs-on: macos-26
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Download arm64 app
+        uses: actions/download-artifact@v4
+        with:
+          name: build-arm64
+          path: packages/arm64
+      - name: Download Intel app
+        uses: actions/download-artifact@v4
+        with:
+          name: build-x86_64
+          path: packages/x86_64
+      - name: Combine and package
+        env:
+          DEVELOPER_DIR: /Applications/Xcode_26.5.app/Contents/Developer
+        run: |
+          set -euo pipefail
+          mkdir -p packages/arm64/extracted packages/x86_64/extracted dist/dmg
+          unzip -q packages/arm64/RaioX-Mac-arm64.zip -d packages/arm64/extracted
+          unzip -q packages/x86_64/RaioX-Mac-x86_64.zip -d packages/x86_64/extracted
+          ARM_APP="packages/arm64/extracted/RaioX Mac.app"
+          INTEL_APP="packages/x86_64/extracted/RaioX Mac.app"
+          UNIVERSAL="dist/RaioXMac-universal"
+          lipo -create \
+            "$ARM_APP/Contents/MacOS/RaioXMac" \
+            "$INTEL_APP/Contents/MacOS/RaioXMac" \
+            -output "$UNIVERSAL"
+          cp "$UNIVERSAL" "$ARM_APP/Contents/MacOS/RaioXMac"
+          chmod 755 "$ARM_APP/Contents/MacOS/RaioXMac"
+          codesign --force --deep --sign - "$ARM_APP"
+          codesign --verify --deep --strict "$ARM_APP"
+          lipo -info "$ARM_APP/Contents/MacOS/RaioXMac"
+          ditto -c -k --sequesterRsrc --keepParent \
+            "$ARM_APP" "dist/RaioX-Mac-macOS15-universal.zip"
+          cp -R "$ARM_APP" "dist/dmg/RaioX Mac.app"
+          ln -s /Applications "dist/dmg/Applications"
+          hdiutil create -volname "RaioX Mac" -srcfolder dist/dmg -ov -format UDZO \
+            "dist/RaioX-Mac-macOS15-universal.dmg"
+          (cd dist && shasum -a 256 RaioX-Mac-macOS15-universal.dmg RaioX-Mac-macOS15-universal.zip) \
+            > dist/SHA256SUMS.txt
+      - name: Upload installers (short retention)
+        uses: actions/upload-artifact@v4
+        with:
+          name: RaioX-Mac-installers
+          path: |
+            dist/RaioX-Mac-macOS15-universal.dmg
+            dist/RaioX-Mac-macOS15-universal.zip
+            dist/SHA256SUMS.txt
+          if-no-files-found: error
+          retention-days: 1

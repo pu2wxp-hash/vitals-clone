@@ -1,6 +1,6 @@
 import Foundation
 
-/// `VitalsClone --dump` prints one real sample of every subsystem and exits (verification aid).
+/// `RaioXMac --dump` prints one real sample of every subsystem and exits (verification aid).
 enum SelfTest {
     static func run() -> Never {
         let sys = SystemSampler(), proc = ProcessSampler()

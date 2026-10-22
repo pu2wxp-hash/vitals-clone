@@ -2,17 +2,18 @@ import SwiftUI
 import AppKit
 
 @main
-struct VitalsCloneApp: App {
-    @State private var store = MonitorStore()
+struct RaioXMacApp: App {
+    @State private var store: MonitorStore
 
     init() {
         if CommandLine.arguments.contains("--dump") { SelfTest.run() }
+        _store = State(initialValue: MonitorStore())
         // LSUIElement equivalent: menu-bar only, no Dock icon.
         NSApplication.shared.setActivationPolicy(.accessory)
     }
 
     var body: some Scene {
-        Window("Vitals", id: "main") {
+        Window("RaioX Mac", id: "main") {
             MainWindowView().environment(store)
         }
         .windowToolbarStyle(.unified(showsTitle: false))

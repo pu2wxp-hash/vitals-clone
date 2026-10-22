@@ -1,30 +1,33 @@
 #!/bin/zsh
-# Builds VitalsClone.app (menu-bar only). Uses Command Line Tools + macOS 26.5 SDK because the
-# Xcode license is not yet accepted and the CLT macOS 27 SDK lacks SwiftUI's macro plugin.
-set -e
+# Builds the RaioX Mac menu-bar application bundle.
+set -euo pipefail
 cd "$(dirname "$0")"
-export DEVELOPER_DIR=/Library/Developer/CommandLineTools
-export SDKROOT=/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk
+
+export DEVELOPER_DIR="${DEVELOPER_DIR:-$(xcode-select -p)}"
+export SDKROOT="${SDKROOT:-$(xcrun --sdk macosx --show-sdk-path)}"
+
 swift build -c release
-APP=build/VitalsClone.app
+APP="build/RaioX Mac.app"
+EXECUTABLE="RaioXMac"
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
-cp .build/release/VitalsClone "$APP/Contents/MacOS/VitalsClone"
+cp ".build/release/$EXECUTABLE" "$APP/Contents/MacOS/$EXECUTABLE"
 cat > "$APP/Contents/Info.plist" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0"><dict>
-  <key>CFBundleName</key><string>VitalsClone</string>
-  <key>CFBundleIdentifier</key><string>com.samin.VitalsClone</string>
-  <key>CFBundleExecutable</key><string>VitalsClone</string>
+  <key>CFBundleName</key><string>RaioX Mac</string>
+  <key>CFBundleDisplayName</key><string>RaioX Mac</string>
+  <key>CFBundleIdentifier</key><string>us.lucianocorrea.raioxmac</string>
+  <key>CFBundleExecutable</key><string>RaioXMac</string>
   <key>CFBundlePackageType</key><string>APPL</string>
   <key>CFBundleShortVersionString</key><string>0.1</string>
   <key>CFBundleVersion</key><string>1</string>
   <key>LSMinimumSystemVersion</key><string>15.0</string>
   <key>LSUIElement</key><true/>
-  <key>NSDesktopFolderUsageDescription</key><string>Checks for a .git folder or project file to group developer processes by project.</string>
-  <key>NSDocumentsFolderUsageDescription</key><string>Checks for a .git folder or project file to group developer processes by project.</string>
-  <key>NSDownloadsFolderUsageDescription</key><string>Checks for a .git folder or project file to group developer processes by project.</string>
+  <key>NSDesktopFolderUsageDescription</key><string>Checks for a project marker to group developer processes.</string>
+  <key>NSDocumentsFolderUsageDescription</key><string>Checks for a project marker to group developer processes.</string>
+  <key>NSDownloadsFolderUsageDescription</key><string>Checks for a project marker to group developer processes.</string>
 </dict></plist>
 PLIST
 codesign --force --sign - "$APP"

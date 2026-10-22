@@ -2,7 +2,7 @@ import SwiftUI
 import AppKit
 
 // Dropdown, matched to Vitals' compact panel: icon tab strip on top, a header row with uptime,
-// a 2-column grid of metric tiles, "Busiest Right Now", and a footer with Open Vitals / Settings / Quit.
+// a 2-column grid of metric tiles, "Busiest Right Now", and a footer with Open RaioX Mac / Quit.
 
 struct MenuBarView: View {
     @Environment(MonitorStore.self) var store
@@ -61,7 +61,7 @@ struct MenuBarView: View {
 
             // Footer
             HStack(spacing: 8) {
-                FooterButton(symbol: "macwindow", title: "Open Vitals", expand: true) {
+                FooterButton(symbol: "macwindow", title: "Open RaioX Mac", expand: true) {
                     store.tab = tab
                     openWindow(id: "main")
                     NSApp.activate(ignoringOtherApps: true)

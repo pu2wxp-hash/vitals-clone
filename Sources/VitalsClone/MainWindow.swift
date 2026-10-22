@@ -34,7 +34,7 @@ struct MainWindowView: View {
         .toolbar {
             ToolbarItem(placement: .navigation) {
                 VStack(alignment: .leading, spacing: 0) {
-                    Text("Vitals").font(.system(size: 13, weight: .semibold)).foregroundStyle(Theme.ink)
+                    Text("RaioX Mac").font(.system(size: 13, weight: .semibold)).foregroundStyle(Theme.ink)
                     Text(Hardware.summary).font(.system(size: 11)).foregroundStyle(Theme.ink2)
                 }
                 .padding(.horizontal, 6)
@@ -439,7 +439,7 @@ struct MetricTab: View {
             return Spec(value: f.0, unit: f.1, caption: "Free of \(fmtBytes(s.diskTotal))", history: store.diskHistory, max: nil, yLabel: { fmtRate($0) }, stats: [
                 Stat(symbol: "arrow.down.doc.fill", title: "Reading", value: r.0, unit: r.1, caption: "Read \(fmtBytes(Int64(store.readSession))) this session"),
                 Stat(symbol: "arrow.up.doc.fill", title: "Writing", value: w.0, unit: w.1, caption: "Data the disk is writing"),
-                Stat(symbol: "square.and.pencil", title: "Written", value: splitUnit(fmtBytes(Int64(store.writtenSession))).0, unit: splitUnit(fmtBytes(Int64(store.writtenSession))).1, caption: "Since Vitals started"),
+                Stat(symbol: "square.and.pencil", title: "Written", value: splitUnit(fmtBytes(Int64(store.writtenSession))).0, unit: splitUnit(fmtBytes(Int64(store.writtenSession))).1, caption: "Since RaioX Mac started"),
             ])
         case .network:
             let d = splitUnit(fmtRate(s.netIn)), u = splitUnit(fmtRate(s.netOut))
@@ -451,7 +451,7 @@ struct MetricTab: View {
         default: // GPU
             return Spec(value: s.gpu.map(pctNum) ?? "—", unit: "%", caption: Hardware.chip, history: store.gpuHistory, max: 1, yLabel: { pct($0) }, stats: [
                 Stat(symbol: "equal.circle.fill", title: "Average", value: pctNum(store.gpuSum / max(store.gpuCount, 1)), unit: "%", caption: "In the chart above"),
-                Stat(symbol: "arrow.up.to.line", title: "Peak", value: pctNum(store.gpuPeak), unit: "%", caption: "Since Vitals started"),
+                Stat(symbol: "arrow.up.to.line", title: "Peak", value: pctNum(store.gpuPeak), unit: "%", caption: "Since RaioX Mac started"),
                 Stat(symbol: "cpu.fill", title: "Cores", value: "\(Hardware.cores)", unit: "", caption: Hardware.eCores > 0 ? "\(Hardware.pCores) P · \(Hardware.eCores) E CPU cores" : "CPU cores", color: Theme.cpu),
             ])
         }

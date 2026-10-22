@@ -2,9 +2,9 @@
 import PackageDescription
 
 let package = Package(
-    name: "VitalsClone",
+    name: "RaioXMac",
     platforms: [.macOS(.v15)],
     targets: [
-        .executableTarget(name: "VitalsClone", path: "Sources/VitalsClone", swiftSettings: [.swiftLanguageMode(.v5)])
+        .executableTarget(name: "RaioXMac", path: "Sources/VitalsClone", swiftSettings: [.swiftLanguageMode(.v5)])
     ]
 )
