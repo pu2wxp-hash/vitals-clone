@@ -30,6 +30,10 @@ class VenturaCompatibilityTests(unittest.TestCase):
         self.assertNotIn(".environment(store)", all_source, "Typed Observable environment injection is unavailable on Ventura")
         self.assertGreaterEqual(all_source.count("@EnvironmentObject var store: MonitorStore"), 13, "All store-consuming views must use EnvironmentObject")
 
+    def test_toolbar_does_not_use_macos_14_removal_api(self):
+        main_window = (SOURCES / "MainWindow.swift").read_text()
+        self.assertNotIn(".toolbar(removing:", main_window, "toolbar(removing:) requires a newer macOS than Ventura")
+
     def test_workflow_artifact_names_mark_macos_13(self):
         workflow = (ROOT / ".github" / "workflows" / "build-macos.yml").read_text()
         self.assertGreaterEqual(workflow.count("RaioX-Mac-macOS13-universal"), 3, "Installer names must identify the macOS 13 build")

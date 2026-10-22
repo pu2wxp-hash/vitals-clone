@@ -49,7 +49,6 @@ struct MainWindowView: View {
                 .help("Show only apps whose name contains this (⌘F)")
             }
         }
-        .toolbar(removing: .title)
         .alert(item: $confirm) { c in
             Alert(title: Text(c.title), message: Text(c.message),
                   primaryButton: .destructive(Text("Quit")) { c.action(false) },
