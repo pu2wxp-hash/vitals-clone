@@ -1,5 +1,10 @@
 # RaioX Mac
 
+<!-- cerebro -->
+> **Projeto no cofre Obsidian `cerebro`** ([pu2wxp-hash/cerebro](https://github.com/pu2wxp-hash/cerebro)): `01 Projetos/VitalsClone/VitalsClone.md`. Lá ficam o estado, o ponto de retomada, as decisões e as pendências deste repositório. Ao concluir uma etapa ou decisão aqui, atualize também a nota do projeto no cofre.
+<!-- /cerebro -->
+
+
 Aplicativo de barra de menus para acompanhar a atividade local do Mac. Esta é uma personalização do fork de [Samin12/vitals-clone](https://github.com/Samin12/vitals-clone); o app utiliza SwiftUI e o fluxo de inspeção do REA como referência.
 
 ## Recursos
